@@ -1,0 +1,24 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+bool Answer(vector<string> &dict, string c)
+{
+    if(c.empty()) return true;
+    int n=c.length();
+    for(int i=1;i<=n;i++)
+    {
+        string temp = c.substr(0,i);
+        if(find(dict.begin(),dict.end(),temp)!=dict.end() && Answer(dict,c.substr(i)))
+        return true;
+    }
+    return false;
+}
+int main() {
+    // Write C++ code here
+    vector<string> dict = { "i", "like", "sam", "sung", "samsung", "mobile", "ice", "cream", "icecream", "man", "go", "mango"};
+    string c;
+    cin>>c;
+    bool a= Answer(dict,c);
+    cout<<boolalpha<<a;
+    return 0;
+}

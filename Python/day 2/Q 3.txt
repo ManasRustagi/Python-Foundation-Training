@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int Div(int &num)
+{
+    if(num<0)
+    {
+        num*=-1;
+        return Div(num);
+    }
+    if(num==0 || num==7)
+    return 1;
+    if(num<10) return 0;
+    int temp = ((num/10)-2*(num-(num/10)*10));
+    return Div(temp);
+}
+
+int main() {
+    // Write C++ code here
+    int n;
+    cin>>n;
+    if(Div(n)==1)
+    cout<<"Divisivble";
+    else cout<<"Not Divisible";
+    return 0;
+}
