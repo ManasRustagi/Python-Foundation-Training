@@ -1,4 +1,4 @@
-from OrderProcessor import orderprocessor
+from dao.OrderProcessor import orderprocessor
 from DB_Util import DBConnector
 from Exception.exception import InvalidDataException
 db_connector = DBConnector(host="localhost", user="root", password="root", port="3306", database="OrderManagementSystem")
@@ -10,9 +10,10 @@ class IOrderManagementRepository():
 
 
     def create_order(self):
+        orderprocess=orderprocessor(db_connector)
         userID=input("Enter the User ID : ")
         productID=input("Enter the Product Id of order you want to purchase : ")
-        Quantity=input("Quantity you want to purchase : ")
+        Quantity=int(input("Quantity you want to purchase : "))
         existing_record=self.get_user_id(userID)
         if existing_record is None:
             self.create_user()
@@ -44,6 +45,7 @@ class IOrderManagementRepository():
         values=(productId,productname,description,price,Quantity,type,)
         cur.execute(query,values)
         self.db_connector.connection.commit()
+        self.db_connector.close_connection()
 
     def create_user(self):
         self.db_connector.open_connection()
@@ -56,6 +58,7 @@ class IOrderManagementRepository():
         values=(userID,username,password,role,)
         cur.execute(query,values)
         self.db_connector.connection.commit()
+        self.db_connector.close_connection()
 
 
 
@@ -79,7 +82,7 @@ class IOrderManagementRepository():
         cur = self.db_connector.connection.cursor()
         UserID=input("Enter the user Id For which you want to fetch orders: ")
         query="Select OrderId from Orders Where UserID=%s"
-        values=(UserID)
+        values=(UserID,)
         cur.execute(query,values)
         record=cur.fetchall()
         for i in record:
@@ -115,7 +118,7 @@ class IOrderManagementRepository():
     def delete_order(self,orderID):
         self.db_connector.open_connection()
         cur = self.db_connector.connection.cursor()
-        cur.execute("Delete From Orders Where OrderId=%s",(orderID))
+        cur.execute("Delete From Orders Where OrderId=%s",(orderID,))
         self.db_connector.connection.commit()
 
     def get_unique_productId(self):
@@ -132,31 +135,5 @@ class IOrderManagementRepository():
         cur.execute("select userName from User")
         record=cur.fetchall()
         return record
-def main():
-    print("Choose from The below options : ")
-    print("1. If you want to create Order")
-    print("2. If you want to cancel the order")
-    print("3. If you want add a product in the inventory")
-    print("4. If you want to Create user ID")
-    print("5. If you want to see all the products in the inventory:")
-    print("6. If you want to see Completed Orders")
-    choice = input("Enter your choice : ")
-    if choice == '1':
-        order_respositoy.create_order()
-    elif choice == '2':
-        order_respositoy.cancel_order()
-    elif choice == '3':
-        order_respositoy.create_product()
-    elif choice == '4':
-        order_respositoy.create_user()
-    elif choice == '5':
-        order_respositoy.get_all_Products()
-    elif choice == '6':
-        order_respositoy.getOrderByUser()
-    else:
-        print("Enter correct choice")
-order_respositoy=IOrderManagementRepository(db_connector)
-orderprocess = orderprocessor(db_connector)
 
-main()
 

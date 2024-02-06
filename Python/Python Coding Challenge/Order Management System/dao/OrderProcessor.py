@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+from DB_Util import DBConnector
 class IOrderManagemntRespository(ABC):
     @abstractmethod
     def create_order(self,user,products):
@@ -25,8 +25,8 @@ class IOrderManagemntRespository(ABC):
     def getOrderByUser(self,user):
         pass
 
-
-class orderprocessor():
+db_connector = DBConnector(host="localhost", user="root", password="root", port="3306",database="OrderManagementSystem")
+class orderprocessor:
     def __init__(self,db_connector):
         self.db_connector=db_connector
 
@@ -44,6 +44,9 @@ class orderprocessor():
         Query="INSERT INTO Orders (orderID, userID, ProductId, TotalAmount,Quantity,OrderDate) VALUES (%s, %s, %s, %s,%s,CURDATE())"
         values=(orderID,userID,productID,TotalAmount,Quantity,)
         cur.execute(Query,values)
+        self.db_connector.connection.commit()
+        self.db_connector.close_connection()
+
     def get_unique_orderId(self):
         return len(self.get_allorders()) + 1
 
