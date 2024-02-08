@@ -24,3 +24,19 @@ class PayrollSystemTestCase(unittest.TestCase):
         expected_net_salary = netCheck
         actual_net_salary = psl.CalculateSalary(record[0],record[1],record[2])
         self.assertEqual(actual_net_salary, expected_net_salary)
+
+    def test_verify_error_handling_for_invalid_employee_data(self):
+        employee = {
+            'empID': 1,
+            'firstName': 'John',
+            'lastName': 'Doe',
+            'dob': '1980-05-15',
+            'gender': 'Male',
+            'email': 'fwadw@gmail.com',
+            'phone': '12',
+            'address': '123 Main St, London',
+            'position': 'Manager',
+            'joiningDate': '2020-01-01'
+        }
+        validation_result = esl.checkEmployeeDataValidation(employee)
+        self.assertTrue(validation_result, "Invalid Data Found.")
